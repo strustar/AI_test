@@ -32,17 +32,46 @@ bream_weight = [242.0, 290.0, 340.0, 363.0, 430.0, 450.0, 500.0, 390.0, 450.0, 5
 smelt_length = [9.8, 10.5, 10.6, 11.0, 11.2, 11.3, 11.8, 11.8, 12.0, 12.2, 12.4, 13.0, 14.3, 15.0]
 smelt_weight = [6.7, 7.5, 7.0, 9.7, 9.8, 8.7, 10.0, 9.9, 9.8, 12.2, 13.4, 12.2, 19.7, 19.9]
 
-# bream_length = np.array(bream_length)
-st.write(type(bream_length))
-# st.write(bream_length)
-# st.write(bream_weight)
 
-fig, ax = plt.subplots(layout = 'constrained')  # tight_layout = True
-plt.scatter(bream_length, bream_weight, color = 'red')
-plt.scatter(smelt_length, smelt_weight)
-col1, col2, col3 = st.columns([1, 1, 1])
-with col1:
-    st.pyplot(fig)
+length = bream_length + smelt_length
+weight = bream_weight + smelt_weight
+# fish_data = [[l, w] for l, w in zip(length, weight)]
+
+fish_data = np.concatenate((length, weight), axis = 0)
+fish_data = np.stack((length, weight), axis = 1)
+# fish_data = list(zip(length, weight))
+fish_target = np.array([1]*35 + [0]*14)
+st.write(type(bream_length))
+# st.write(fish_data, fish_target)
+
+import sklearn
+from sklearn.neighbors import KNeighborsClassifier
+kn = KNeighborsClassifier()
+kn.fit(fish_data, fish_target)
+st.write(kn.score(fish_data, fish_target))
+st.write(type(kn.score(fish_data, fish_target)))
+st.write(kn.predict([[30, 600]]))
+st.write(type(kn.predict([[30, 600]])))
+
+
+np.random.seed(42)
+index = np.arange(49)
+
+col = st.columns(3)
+with col[0]:
+    st.write(index)
+    print(index)
+with col[1]:
+    np.random.shuffle(index)
+    st.write(index)
+
+
+# fig, ax = plt.subplots(layout = 'constrained')  # tight_layout = True
+# plt.scatter(bream_length, bream_weight, color = 'red')
+# plt.scatter(smelt_length, smelt_weight)
+# col1, col2, col3 = st.columns([1, 1, 1])
+# with col1:
+#     st.pyplot(fig)
 
 # img = cv.imread('girl_laughing.jpg')
 # if img is None:
